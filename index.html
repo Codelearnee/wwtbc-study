@@ -27,8 +27,6 @@
     pointer-events:none; z-index:0;
   }
   .container { max-width:620px; margin:0 auto; padding:48px 24px 60px; position:relative; z-index:1; }
-  .dal-badge { display:inline-flex; align-items:center; gap:8px; background:rgba(255,255,255,0.06); border:1px solid var(--border); border-radius:100px; padding:6px 16px; font-size:12px; color:var(--gray); letter-spacing:0.5px; margin-bottom:28px; }
-  .dal-badge span { width:6px; height:6px; background:var(--green); border-radius:50%; display:inline-block; animation:pulse 2s infinite; }
   @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.5;transform:scale(0.8)} }
   .screen-icon { width:68px; height:68px; background:linear-gradient(135deg, var(--green-dark), var(--green)); border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:28px; margin:0 auto 20px; box-shadow:0 0 40px rgba(0,200,83,0.25); }
   h1 { font-family:'Syne',sans-serif; font-size:26px; font-weight:800; color:var(--white); text-align:center; margin-bottom:8px; }
@@ -79,9 +77,6 @@
   #full-screen h2 { font-family:'Syne',sans-serif; font-size:22px; color:var(--white); margin-bottom:12px; }
   #full-screen p { font-size:14px; color:var(--gray); line-height:1.7; }
   #full-screen a { color:var(--green); }
-  footer { padding:24px 0 0; text-align:center; border-top:1px solid var(--border); margin-top:32px; }
-  footer p { font-size:12px; color:var(--gray); line-height:1.8; }
-  footer a { color:var(--green); text-decoration:none; }
   .fade-in { animation:fadeIn 0.5s ease forwards; }
   @keyframes fadeIn { from{opacity:0;transform:translateY(14px)} to{opacity:1;transform:translateY(0)} }
 </style>
@@ -89,7 +84,7 @@
 <body>
 <div class="container">
 
-  <div class="dal-badge"><span></span> Dalhousie University · REB #2025-8260</div>
+  
 
   <!-- SCREEN 1: Gender -->
   <div id="gender-screen">
@@ -97,17 +92,17 @@
     <h1>Pre-survey complete!</h1>
     <p class="subtitle">Thank you for completing the pre-study survey.<br>Select your gender below to receive your app assignment.</p>
     <div class="info-box">
-      This study has <strong>three versions</strong> of the <strong>Who Wants to Be Cybersecure?</strong> app. Your gender helps us assign you to the right version. This takes less than 10 seconds.
+      To complete your enrolment, please tell us your gender. This helps us personalise your experience with the app.
     </div>
     <div class="gender-label">What is your gender?</div>
     <div class="gender-grid">
       <div class="gender-option">
         <input type="radio" name="gender" id="male" value="male">
-        <label for="male"><span class="emoji">👨</span>Male</label>
+        <label for="male"><span class="emoji">👨</span>Man</label>
       </div>
       <div class="gender-option">
         <input type="radio" name="gender" id="female" value="female">
-        <label for="female"><span class="emoji">👩</span>Female</label>
+        <label for="female"><span class="emoji">👩</span>Woman</label>
       </div>
       <div class="gender-option">
         <input type="radio" name="gender" id="nonbinary" value="other">
@@ -120,9 +115,6 @@
     </div>
     <div class="error-msg" id="error-msg">Please select your gender to continue.</div>
     <button class="btn-primary" id="submit-btn" onclick="handleSubmit()">Get My App Assignment →</button>
-    <footer>
-      <p>Victor Yisa · <a href="/cdn-cgi/l/email-protection#f7819e94839885d98e9e8496b793969bd99496"><span class="__cf_email__" data-cfemail="9aecf3f9eef5e8b4e3f3e9fbdafefbf6b4f9fb">[email&#160;protected]</span></a> · Dr. Rita Orji · <a href="/cdn-cgi/l/email-protection#a1d3c8d5c08fced3cbc8e1c5c0cd8fc2c0"><span class="__cf_email__" data-cfemail="6e1c071a0f40011c04072e0a0f02400d0f">[email&#160;protected]</span></a></p>
-    </footer>
   </div>
 
   <!-- Processing -->
@@ -164,9 +156,6 @@
       <h3>📅 Remember — Day 14 Post-Survey</h3>
       <p>On Day 14 you will receive a post-study survey link. You will need your Participant ID <strong style="color:var(--gold)" id="pid-reminder">P001</strong> to access it. The post-survey takes approximately 25 minutes. Your compensation of <strong style="color:var(--gold)">₦10,000</strong> will be processed after you complete both surveys.</p>
     </div>
-    <footer>
-      <p>Questions? Contact Victor Yisa · <a href="/cdn-cgi/l/email-protection#c8bea1abbca7bae6b1a1bba988aca9a4e6aba9"><span class="__cf_email__" data-cfemail="7e08171d0a110c5007170d1f3e1a1f12501d1f">[email&#160;protected]</span></a><br>Supervisor: Dr. Rita Orji · <a href="/cdn-cgi/l/email-protection#7f0d160b1e51100d15163f1b1e13511c1e"><span class="__cf_email__" data-cfemail="85f7ecf1e4abeaf7efecc5e1e4e9abe6e4">[email&#160;protected]</span></a><br>Dalhousie University · REB #2025-8260</p>
-    </footer>
   </div>
 
   <!-- Full screen -->
