@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Who Wants to Be Cybersecure?</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root{--green:#00C853;--green-dark:#007A3D;--gold:#FFB300;--navy:#0A1628;--navy-light:#1E3352;--white:#FFFFFF;--gray:#8899AA;--card:rgba(255,255,255,0.04);--border:rgba(255,255,255,0.08);}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'DM Sans',sans-serif;background:var(--navy);color:#E8EFF7;min-height:100vh;}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 80% 60% at 20% 0%,rgba(0,200,83,0.10) 0%,transparent 60%),radial-gradient(ellipse 60% 50% at 80% 100%,rgba(255,179,0,0.07) 0%,transparent 50%);pointer-events:none;z-index:0;}
+.container{max-width:620px;margin:0 auto;padding:48px 24px 60px;position:relative;z-index:1;}
+.screen-icon{width:68px;height:68px;background:linear-gradient(135deg,var(--green-dark),var(--green));border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:28px;margin:0 auto 20px;box-shadow:0 0 40px rgba(0,200,83,0.25);}
+h1{font-family:'Syne',sans-serif;font-size:26px;font-weight:800;color:var(--white);text-align:center;margin-bottom:8px;}
+.subtitle{font-size:15px;color:var(--gray);text-align:center;line-height:1.6;margin-bottom:32px;}
+.info-box{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:18px 20px;margin-bottom:28px;font-size:14px;color:#B0C4D8;line-height:1.7;}
+.gender-label{font-family:'Syne',sans-serif;font-size:13px;font-weight:600;text-transform:uppercase;letter-spacing:1px;color:var(--gray);margin-bottom:14px;}
+.gender-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:24px;}
+.gender-option{position:relative;}
+.gender-option input{position:absolute;opacity:0;width:0;height:0;}
+.gender-option label{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;padding:20px 16px;background:var(--card);border:1.5px solid var(--border);border-radius:14px;cursor:pointer;transition:all 0.2s;font-size:14px;color:#B0C4D8;text-align:center;}
+.gender-option label .emoji{font-size:24px;line-height:1;}
+.gender-option input:checked+label{background:rgba(0,200,83,0.1);border-color:var(--green);color:var(--white);}
+.gender-option label:hover{border-color:rgba(0,200,83,0.4);background:rgba(255,255,255,0.06);}
+.error-msg{display:none;background:rgba(255,80,80,0.1);border:1px solid rgba(255,80,80,0.25);border-radius:10px;padding:12px 16px;font-size:13px;color:#FF7070;text-align:center;margin-bottom:16px;}
+.btn{display:block;width:100%;padding:18px;background:var(--green);color:var(--navy);border:none;border-radius:14px;font-family:'Syne',sans-serif;font-size:16px;font-weight:700;cursor:pointer;text-align:center;transition:all 0.2s;}
+.btn:hover{background:#00E060;transform:translateY(-1px);box-shadow:0 8px 24px rgba(0,200,83,0.3);}
+.btn:disabled{background:var(--navy-light);color:var(--gray);cursor:not-allowed;transform:none;box-shadow:none;}
+#processing{display:none;text-align:center;padding:80px 0;}
+.spinner{width:48px;height:48px;border:3px solid rgba(0,200,83,0.2);border-top-color:var(--green);border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto 24px;}
+@keyframes spin{to{transform:rotate(360deg);}}
+#result{display:none;}
+.id-card{background:rgba(0,200,83,0.06);border:1.5px solid rgba(0,200,83,0.3);border-radius:20px;padding:28px;text-align:center;margin-bottom:20px;}
+.id-label{font-size:11px;text-transform:uppercase;letter-spacing:2px;color:var(--green);margin-bottom:10px;}
+.id-number{font-family:'Syne',sans-serif;font-size:56px;font-weight:800;color:var(--white);letter-spacing:4px;line-height:1;margin-bottom:14px;}
+.id-warning{display:inline-flex;align-items:center;gap:6px;background:rgba(255,179,0,0.1);border:1px solid rgba(255,179,0,0.25);border-radius:8px;padding:8px 14px;font-size:13px;color:var(--gold);}
+.app-card{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:24px;margin-bottom:20px;}
+.app-header{display:flex;align-items:center;gap:14px;margin-bottom:16px;}
+.app-icon{width:50px;height:50px;background:linear-gradient(135deg,#1a3a6b,#2a5a9a);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0;}
+.app-label{font-size:11px;text-transform:uppercase;letter-spacing:1.5px;color:var(--gray);margin-bottom:4px;}
+.app-name{font-family:'Syne',sans-serif;font-size:17px;font-weight:700;color:var(--white);}
+.app-desc{font-size:14px;color:#B0C4D8;line-height:1.7;margin-bottom:20px;}
+.app-desc strong{color:var(--white);}
+.steps{display:flex;flex-direction:column;gap:10px;margin-bottom:20px;}
+.step{display:flex;align-items:flex-start;gap:12px;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:12px;padding:12px 14px;}
+.step-num{width:24px;height:24px;background:var(--navy-light);border-radius:6px;display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-size:11px;font-weight:700;color:var(--green);flex-shrink:0;margin-top:1px;}
+.step-text{font-size:13px;color:#B0C4D8;line-height:1.5;}
+.step-text strong{color:var(--white);}
+.download-btn{display:block;width:100%;padding:18px;background:var(--green);color:var(--navy);border:none;border-radius:14px;font-family:'Syne',sans-serif;font-size:16px;font-weight:700;cursor:pointer;text-decoration:none;text-align:center;transition:all 0.2s;}
+.download-btn:hover{background:#00E060;transform:translateY(-1px);box-shadow:0 8px 24px rgba(0,200,83,0.3);}
+.reminder{background:rgba(255,179,0,0.05);border:1px solid rgba(255,179,0,0.2);border-radius:16px;padding:20px;margin-bottom:20px;}
+.reminder h3{font-family:'Syne',sans-serif;font-size:14px;font-weight:600;color:var(--gold);margin-bottom:10px;}
+.reminder p{font-size:13px;color:#B0C4D8;line-height:1.7;}
+#fullscreen{display:none;text-align:center;padding:80px 0;}
+#fullscreen h2{font-family:'Syne',sans-serif;font-size:22px;color:var(--white);margin-bottom:12px;}
+#fullscreen p{font-size:14px;color:var(--gray);line-height:1.7;}
+#fullscreen a{color:var(--green);}
+.fade-in{animation:fadeIn 0.5s ease forwards;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+</style>
+</head>
+<body>
+<div class="container">
+
+<div id="gender-screen">
+  <div class="screen-icon">🎉</div>
+  <h1>Pre-survey complete!</h1>
+  <p class="subtitle">Thank you for completing the pre-study survey.<br>Select your gender below to receive your app assignment.</p>
+  <div class="info-box">To complete your enrolment, please tell us your gender. This helps us personalise your experience with the app.</div>
+  <div class="gender-label">What is your gender?</div>
+  <div class="gender-grid">
+    <div class="gender-option"><input type="radio" name="gender" id="g1" value="male"><label for="g1"><span class="emoji">👨</span>Man</label></div>
+    <div class="gender-option"><input type="radio" name="gender" id="g2" value="female"><label for="g2"><span class="emoji">👩</span>Woman</label></div>
+    <div class="gender-option"><input type="radio" name="gender" id="g3" value="other"><label for="g3"><span class="emoji">🧑</span>Non-binary</label></div>
+    <div class="gender-option"><input type="radio" name="gender" id="g4" value="other"><label for="g4"><span class="emoji">🔒</span>Prefer not to say</label></div>
+  </div>
+  <div class="error-msg" id="err">Please select your gender to continue.</div>
+  <button class="btn" id="submitBtn" onclick="submitGender()">Get My App Assignment →</button>
+</div>
+
+<div id="processing">
+  <div class="spinner"></div>
+  <p style="color:var(--gray);font-size:15px;">Assigning your condition and generating your ID...</p>
+</div>
+
+<div id="result" class="fade-in">
+  <div class="screen-icon">✓</div>
+  <h1>You are enrolled!</h1>
+  <p class="subtitle">Your Participant ID and app have been assigned. Please read carefully.</p>
+  <div class="id-card">
+    <div class="id-label">Your Participant ID</div>
+    <div class="id-number" id="pidDisplay">P001</div>
+    <div class="id-warning">⚠ Screenshot this — you will need it on Day 14</div>
+  </div>
+  <div class="app-card">
+    <div class="app-header">
+      <div class="app-icon">📱</div>
+      <div>
+        <div class="app-label">Your assigned app</div>
+        <div class="app-name" id="appName">Who Wants to Be Cybersecure?</div>
+      </div>
+    </div>
+    <p class="app-desc">You have been assigned to use <strong id="appNameInline">your app</strong> for the next <strong>14 days</strong>. Please use it for at least <strong>15 minutes per day</strong>.</p>
+    <div class="steps">
+      <div class="step"><div class="step-num">1</div><div class="step-text"><strong>Download your app</strong> using the button below</div></div>
+      <div class="step"><div class="step-num">2</div><div class="step-text"><strong>Use it daily</strong> for at least 15 minutes over 14 days</div></div>
+      <div class="step"><div class="step-num">3</div><div class="step-text"><strong>On Day 14</strong> you will receive your post-study survey link</div></div>
+      <div class="step"><div class="step-num">4</div><div class="step-text"><strong>Enter your ID</strong> (<span id="pidStep" style="color:var(--green);font-weight:600">P001</span>) in the post-survey</div></div>
+    </div>
+    <a id="downloadBtn" class="download-btn" href="#" target="_blank">Download My App →</a>
+  </div>
+  <div class="reminder">
+    <h3>📅 Remember — Day 14 Post-Survey</h3>
+    <p>You will need your Participant ID <strong style="color:var(--gold)" id="pidReminder">P001</strong> to access the post-survey. Compensation of <strong style="color:var(--gold)">₦10,000</strong> is paid after completing both surveys.</p>
+  </div>
+</div>
+
+<div id="fullscreen">
+  <h2>Study is currently full</h2>
+  <p>Thank you for your interest. Please contact <a href="/cdn-cgi/l/email-protection#d3a5bab0a7bca1fdaabaa0b293b7b2bffdb0b2"><span class="__cf_email__" data-cfemail="43352a20372c316d3a2a30220327222f6d2022">[email&#160;protected]</span></a></p>
+</div>
+
+</div>
+
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+var SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxIbwPdlVqAeyToQ3pBEcVdA3ob-uO1sXdObbKzNn2guDIponIMxulIIMm696jCJ7Z3_w/exec';
+
+var APP_LINKS = {
+  app1: 'https://drive.google.com/file/d/1nUKvp1aKkO-4MG2GkyK_3qmGwR-1-ExV/view?usp=drive_link',
+  app2: 'https://drive.google.com/file/d/1ohOIILrFn6JNeVeVsEOEVPSbDs7J_74D/view?usp=sharing',
+  app3: 'https://drive.google.com/file/d/1o5rGnjrx35KGD73jgk_SrHOXHgLkMRyz/view?usp=sharing'
+};
+
+var APP_NAMES = {
+  app1: 'Who Wants to Be Cybersecure? — General Edition',
+  app2: 'Who Wants to Be Cybersecure? — Men\'s Edition',
+  app3: 'Who Wants to Be Cybersecure? — Women\'s Edition'
+};
+
+var TARGET = {
+  app1: { male: 0.50, female: 0.50 },
+  app2: { male: 0.70, female: 0.30 },
+  app3: { male: 0.30, female: 0.70 }
+};
+
+var TOLERANCE = 0.08;
+
+function getRatio(counts, gender) {
+  var total = counts.male + counts.female + counts.other;
+  if (total === 0) return 0;
+  return counts[gender] / total;
+}
+
+function assign(gender, counts) {
+  if (gender === 'other') return 'app1';
+  if (gender === 'male') {
+    if (getRatio(counts.app2, 'male') <= TARGET.app2.male + TOLERANCE) return 'app2';
+    if (getRatio(counts.app1, 'male') <= TARGET.app1.male + TOLERANCE) return 'app1';
+    if (getRatio(counts.app3, 'male') <= TARGET.app3.male + TOLERANCE) return 'app3';
+    return null;
+  }
+  if (gender === 'female') {
+    if (getRatio(counts.app3, 'female') <= TARGET.app3.female + TOLERANCE) return 'app3';
+    if (getRatio(counts.app1, 'female') <= TARGET.app1.female + TOLERANCE) return 'app1';
+    if (getRatio(counts.app2, 'female') <= TARGET.app2.female + TOLERANCE) return 'app2';
+    return null;
+  }
+}
+
+function formatId(n) {
+  return 'P' + String(n).padStart(3, '0');
+}
+
+function show(id) {
+  var ids = ['gender-screen','processing','result','fullscreen'];
+  for (var i = 0; i < ids.length; i++) {
+    document.getElementById(ids[i]).style.display = 'none';
+  }
+  document.getElementById(id).style.display = 'block';
+}
+
+function submitGender() {
+  var sel = document.querySelector('input[name="gender"]:checked');
+  if (!sel) {
+    document.getElementById('err').style.display = 'block';
+    return;
+  }
+  document.getElementById('err').style.display = 'none';
+  document.getElementById('submitBtn').disabled = true;
+  show('processing');
+
+  var gender = sel.value;
+
+  // Use script tag injection to bypass CORS for GET request
+  var callbackName = 'cb_' + Date.now();
+  var script = document.createElement('script');
+  
+  window[callbackName] = function(data) {
+    delete window[callbackName];
+    document.head.removeChild(script);
+
+    var state = {
+      nextId: parseInt(data.nextId) || 1,
+      counts: {
+        app1: { male: parseInt(data.app1_male)||0, female: parseInt(data.app1_female)||0, other: parseInt(data.app1_other)||0 },
+        app2: { male: parseInt(data.app2_male)||0, female: parseInt(data.app2_female)||0, other: parseInt(data.app2_other)||0 },
+        app3: { male: parseInt(data.app3_male)||0, female: parseInt(data.app3_female)||0, other: parseInt(data.app3_other)||0 }
+      }
+    };
+
+    var condition = assign(gender, state.counts);
+
+    if (!condition) {
+      show('fullscreen');
+      return;
+    }
+
+    var pid = formatId(state.nextId);
+    var newCount = (state.counts[condition][gender] || 0) + 1;
+    var payload = { nextId: state.nextId + 1 };
+    payload[condition + '_' + gender] = newCount;
+
+    // POST using no-cors (fire and forget)
+    fetch(SCRIPT_URL, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: { 'Content-Type': 'text/plain' },
+      body: JSON.stringify(payload)
+    });
+
+    document.getElementById('pidDisplay').textContent = pid;
+    document.getElementById('pidStep').textContent = pid;
+    document.getElementById('pidReminder').textContent = pid;
+    document.getElementById('appName').textContent = APP_NAMES[condition];
+    document.getElementById('appNameInline').textContent = APP_NAMES[condition];
+    document.getElementById('downloadBtn').href = APP_LINKS[condition];
+
+    show('result');
+    window.scrollTo(0, 0);
+  };
+
+  script.src = SCRIPT_URL + '?callback=' + callbackName;
+  script.onerror = function() {
+    delete window[callbackName];
+    document.head.remove
