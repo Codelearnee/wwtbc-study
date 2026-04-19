@@ -1,252 +1,493 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Who Wants to Be Cybersecure?</title>
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
-<style>
-:root{--green:#00C853;--green-dark:#007A3D;--gold:#FFB300;--navy:#0A1628;--navy-light:#1E3352;--white:#FFFFFF;--gray:#8899AA;--card:rgba(255,255,255,0.04);--border:rgba(255,255,255,0.08);}
-*{margin:0;padding:0;box-sizing:border-box;}
-body{font-family:'DM Sans',sans-serif;background:var(--navy);color:#E8EFF7;min-height:100vh;}
-body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 80% 60% at 20% 0%,rgba(0,200,83,0.10) 0%,transparent 60%),radial-gradient(ellipse 60% 50% at 80% 100%,rgba(255,179,0,0.07) 0%,transparent 50%);pointer-events:none;z-index:0;}
-.container{max-width:620px;margin:0 auto;padding:48px 24px 60px;position:relative;z-index:1;}
-.screen-icon{width:68px;height:68px;background:linear-gradient(135deg,var(--green-dark),var(--green));border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:28px;margin:0 auto 20px;box-shadow:0 0 40px rgba(0,200,83,0.25);}
-h1{font-family:'Syne',sans-serif;font-size:26px;font-weight:800;color:var(--white);text-align:center;margin-bottom:8px;}
-.subtitle{font-size:15px;color:var(--gray);text-align:center;line-height:1.6;margin-bottom:32px;}
-.info-box{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:18px 20px;margin-bottom:28px;font-size:14px;color:#B0C4D8;line-height:1.7;}
-.gender-label{font-family:'Syne',sans-serif;font-size:13px;font-weight:600;text-transform:uppercase;letter-spacing:1px;color:var(--gray);margin-bottom:14px;}
-.gender-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:24px;}
-.gender-option{position:relative;}
-.gender-option input{position:absolute;opacity:0;width:0;height:0;}
-.gender-option label{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;padding:20px 16px;background:var(--card);border:1.5px solid var(--border);border-radius:14px;cursor:pointer;transition:all 0.2s;font-size:14px;color:#B0C4D8;text-align:center;}
-.gender-option label .emoji{font-size:24px;line-height:1;}
-.gender-option input:checked+label{background:rgba(0,200,83,0.1);border-color:var(--green);color:var(--white);}
-.gender-option label:hover{border-color:rgba(0,200,83,0.4);background:rgba(255,255,255,0.06);}
-.error-msg{display:none;background:rgba(255,80,80,0.1);border:1px solid rgba(255,80,80,0.25);border-radius:10px;padding:12px 16px;font-size:13px;color:#FF7070;text-align:center;margin-bottom:16px;}
-.btn{display:block;width:100%;padding:18px;background:var(--green);color:var(--navy);border:none;border-radius:14px;font-family:'Syne',sans-serif;font-size:16px;font-weight:700;cursor:pointer;text-align:center;transition:all 0.2s;}
-.btn:hover{background:#00E060;transform:translateY(-1px);box-shadow:0 8px 24px rgba(0,200,83,0.3);}
-.btn:disabled{background:var(--navy-light);color:var(--gray);cursor:not-allowed;transform:none;box-shadow:none;}
-#processing{display:none;text-align:center;padding:80px 0;}
-.spinner{width:48px;height:48px;border:3px solid rgba(0,200,83,0.2);border-top-color:var(--green);border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto 24px;}
-@keyframes spin{to{transform:rotate(360deg);}}
-#result{display:none;}
-.id-card{background:rgba(0,200,83,0.06);border:1.5px solid rgba(0,200,83,0.3);border-radius:20px;padding:28px;text-align:center;margin-bottom:20px;}
-.id-label{font-size:11px;text-transform:uppercase;letter-spacing:2px;color:var(--green);margin-bottom:10px;}
-.id-number{font-family:'Syne',sans-serif;font-size:56px;font-weight:800;color:var(--white);letter-spacing:4px;line-height:1;margin-bottom:14px;}
-.id-warning{display:inline-flex;align-items:center;gap:6px;background:rgba(255,179,0,0.1);border:1px solid rgba(255,179,0,0.25);border-radius:8px;padding:8px 14px;font-size:13px;color:var(--gold);}
-.app-card{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:24px;margin-bottom:20px;}
-.app-header{display:flex;align-items:center;gap:14px;margin-bottom:16px;}
-.app-icon{width:50px;height:50px;background:linear-gradient(135deg,#1a3a6b,#2a5a9a);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0;}
-.app-label{font-size:11px;text-transform:uppercase;letter-spacing:1.5px;color:var(--gray);margin-bottom:4px;}
-.app-name{font-family:'Syne',sans-serif;font-size:17px;font-weight:700;color:var(--white);}
-.app-desc{font-size:14px;color:#B0C4D8;line-height:1.7;margin-bottom:20px;}
-.app-desc strong{color:var(--white);}
-.steps{display:flex;flex-direction:column;gap:10px;margin-bottom:20px;}
-.step{display:flex;align-items:flex-start;gap:12px;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:12px;padding:12px 14px;}
-.step-num{width:24px;height:24px;background:var(--navy-light);border-radius:6px;display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-size:11px;font-weight:700;color:var(--green);flex-shrink:0;margin-top:1px;}
-.step-text{font-size:13px;color:#B0C4D8;line-height:1.5;}
-.step-text strong{color:var(--white);}
-.download-btn{display:block;width:100%;padding:18px;background:var(--green);color:var(--navy);border:none;border-radius:14px;font-family:'Syne',sans-serif;font-size:16px;font-weight:700;cursor:pointer;text-decoration:none;text-align:center;transition:all 0.2s;}
-.download-btn:hover{background:#00E060;transform:translateY(-1px);box-shadow:0 8px 24px rgba(0,200,83,0.3);}
-.reminder{background:rgba(255,179,0,0.05);border:1px solid rgba(255,179,0,0.2);border-radius:16px;padding:20px;margin-bottom:20px;}
-.reminder h3{font-family:'Syne',sans-serif;font-size:14px;font-weight:600;color:var(--gold);margin-bottom:10px;}
-.reminder p{font-size:13px;color:#B0C4D8;line-height:1.7;}
-#fullscreen{display:none;text-align:center;padding:80px 0;}
-#fullscreen h2{font-family:'Syne',sans-serif;font-size:22px;color:var(--white);margin-bottom:12px;}
-#fullscreen p{font-size:14px;color:var(--gray);line-height:1.7;}
-#fullscreen a{color:var(--green);}
-.fade-in{animation:fadeIn 0.5s ease forwards;}
-@keyframes fadeIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>WWTBC Study – Participant Registration</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400;500&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --dal-navy: #002145;
+      --dal-gold: #CFB87C;
+      --dal-blue: #00538C;
+      --dal-light: #E8F0F7;
+      --text-primary: #0D1B2A;
+      --text-secondary: #4A5568;
+      --text-muted: #718096;
+      --border: #D1DCE8;
+      --success: #1A6B3C;
+      --error: #C0392B;
+      --white: #ffffff;
+    }
+
+    html, body {
+      height: 100%;
+      background: #F7F9FC;
+      font-family: 'DM Sans', sans-serif;
+      color: var(--text-primary);
+    }
+
+    body {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+      padding: 2rem 1rem;
+    }
+
+    .page-wrapper {
+      width: 100%;
+      max-width: 560px;
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+
+    /* Header */
+    .header {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-bottom: none;
+      border-radius: 12px 12px 0 0;
+      padding: 1.75rem 2rem 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .dal-logo-block {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .dal-logo-img {
+      height: 52px;
+      width: auto;
+      display: block;
+      object-fit: contain;
+    }
+
+    .dal-logo-fallback {
+      height: 52px;
+      width: 52px;
+      background: var(--dal-navy);
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'EB Garamond', serif;
+      font-size: 22px;
+      color: var(--dal-gold);
+      font-weight: 500;
+      letter-spacing: 0.02em;
+      flex-shrink: 0;
+    }
+
+    .dal-wordmark {
+      border-left: 2px solid var(--dal-gold);
+      padding-left: 14px;
+    }
+
+    .dal-wordmark .university-name {
+      font-family: 'EB Garamond', serif;
+      font-size: 17px;
+      font-weight: 500;
+      color: var(--dal-navy);
+      line-height: 1.2;
+    }
+
+    .dal-wordmark .faculty-name {
+      font-size: 11.5px;
+      color: var(--text-secondary);
+      margin-top: 3px;
+      letter-spacing: 0.01em;
+    }
+
+    /* Gold accent bar */
+    .accent-bar {
+      height: 3px;
+      background: linear-gradient(90deg, var(--dal-navy) 0%, var(--dal-gold) 60%, var(--dal-navy) 100%);
+    }
+
+    /* Main card */
+    .main-card {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-top: none;
+      border-radius: 0 0 12px 12px;
+      padding: 2.25rem 2rem 2rem;
+    }
+
+    .study-title {
+      font-family: 'EB Garamond', serif;
+      font-size: 21px;
+      font-weight: 500;
+      color: var(--dal-navy);
+      margin-bottom: 0.4rem;
+      line-height: 1.3;
+    }
+
+    .study-subtitle {
+      font-size: 13.5px;
+      color: var(--text-secondary);
+      line-height: 1.6;
+      margin-bottom: 1.75rem;
+      padding-bottom: 1.75rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    /* PID section */
+    .pid-section {
+      text-align: center;
+      padding: 1.75rem 1.5rem;
+      background: var(--dal-light);
+      border: 1px solid #BDD0E4;
+      border-radius: 10px;
+      margin-bottom: 1.5rem;
+      position: relative;
+      min-height: 140px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .pid-label {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--dal-blue);
+      margin-bottom: 10px;
+    }
+
+    .pid-number {
+      font-family: 'EB Garamond', serif;
+      font-size: 64px;
+      font-weight: 500;
+      color: var(--dal-navy);
+      line-height: 1;
+      letter-spacing: 0.04em;
+      margin-bottom: 14px;
+      min-height: 70px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .pid-number.loading {
+      font-size: 24px;
+      color: var(--text-muted);
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 400;
+      letter-spacing: 0.02em;
+    }
+
+    .pid-number.error-state {
+      font-size: 15px;
+      color: var(--error);
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 400;
+    }
+
+    .copy-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 7px 16px;
+      border: 1px solid #BDD0E4;
+      background: var(--white);
+      color: var(--dal-blue);
+      border-radius: 6px;
+      font-size: 13px;
+      font-family: 'DM Sans', sans-serif;
+      cursor: pointer;
+      font-weight: 500;
+      transition: background 0.15s, border-color 0.15s;
+    }
+
+    .copy-btn:hover { background: #D6E8F5; border-color: #9ABCD6; }
+    .copy-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+    .copy-icon { width: 13px; height: 13px; }
+
+    /* Instruction box */
+    .instruction-box {
+      background: #FFF9EC;
+      border: 1px solid #E8D5A3;
+      border-left: 3px solid var(--dal-gold);
+      border-radius: 0 8px 8px 0;
+      padding: 13px 15px;
+      margin-bottom: 1.5rem;
+    }
+
+    .instruction-box p {
+      font-size: 13.5px;
+      color: #4A3B1A;
+      line-height: 1.65;
+    }
+
+    .instruction-box p + p {
+      margin-top: 6px;
+    }
+
+    .instruction-box strong {
+      font-weight: 600;
+      color: #2D2309;
+    }
+
+    /* Continue button */
+    .continue-btn {
+      width: 100%;
+      padding: 14px;
+      background: var(--dal-navy);
+      color: var(--white);
+      border: none;
+      border-radius: 8px;
+      font-size: 15px;
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background 0.15s, transform 0.1s;
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .continue-btn:hover:not(:disabled) { background: #003366; }
+    .continue-btn:active:not(:disabled) { transform: scale(0.99); }
+    .continue-btn:disabled { background: #8A9BB0; cursor: not-allowed; }
+
+    .arrow-icon { width: 16px; height: 16px; }
+
+    /* Footer note */
+    .footer-note {
+      font-size: 11.5px;
+      color: var(--text-muted);
+      text-align: center;
+      line-height: 1.6;
+    }
+
+    /* Capacity / error screens */
+    .status-screen {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      padding: 2rem 1.5rem;
+      gap: 1rem;
+    }
+
+    .status-screen.visible { display: flex; }
+
+    .status-icon {
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .status-icon.capacity { background: #F0F4F8; }
+    .status-icon.error { background: #FDECEC; }
+
+    .status-title {
+      font-family: 'EB Garamond', serif;
+      font-size: 20px;
+      color: var(--dal-navy);
+    }
+
+    .status-body {
+      font-size: 14px;
+      color: var(--text-secondary);
+      line-height: 1.7;
+      max-width: 360px;
+    }
+
+    /* Mobile */
+    @media (max-width: 480px) {
+      .header { padding: 1.25rem 1.25rem 1.1rem; }
+      .main-card { padding: 1.5rem 1.25rem 1.5rem; }
+      .pid-number { font-size: 52px; }
+      .dal-wordmark .university-name { font-size: 15px; }
+    }
+  </style>
 </head>
 <body>
-<div class="container">
 
-<div id="gender-screen">
-  <div class="screen-icon">🎉</div>
-  <h1>Pre-survey complete!</h1>
-  <p class="subtitle">Thank you for completing the pre-study survey.<br>Select your gender below to receive your app assignment.</p>
-  <div class="info-box">To complete your enrolment, please tell us your gender. This helps us personalise your experience with the app.</div>
-  <div class="gender-label">What is your gender?</div>
-  <div class="gender-grid">
-    <div class="gender-option"><input type="radio" name="gender" id="g1" value="male"><label for="g1"><span class="emoji">👨</span>Man</label></div>
-    <div class="gender-option"><input type="radio" name="gender" id="g2" value="female"><label for="g2"><span class="emoji">👩</span>Woman</label></div>
-    <div class="gender-option"><input type="radio" name="gender" id="g3" value="other"><label for="g3"><span class="emoji">🧑</span>Non-binary</label></div>
-    <div class="gender-option"><input type="radio" name="gender" id="g4" value="other"><label for="g4"><span class="emoji">🔒</span>Prefer not to say</label></div>
-  </div>
-  <div class="error-msg" id="err">Please select your gender to continue.</div>
-  <button class="btn" id="submitBtn" onclick="submitGender()">Get My App Assignment →</button>
-</div>
+<div class="page-wrapper">
 
-<div id="processing">
-  <div class="spinner"></div>
-  <p style="color:var(--gray);font-size:15px;">Assigning your condition and generating your ID...</p>
-</div>
+  <!-- Header -->
+  <div class="header">
+    <div class="dal-logo-block">
+      <!--
+        LOGO CONFIGURATION:
+        Option A (recommended): Download Dal logo from https://www.dal.ca/dept/communications/brand-standards/logo.html
+        Save as "dal-logo.png" in the same folder as index.html, then use:
+        <img src="dal-logo.png" alt="Dalhousie University" class="dal-logo-img" />
 
-<div id="result" class="fade-in">
-  <div class="screen-icon">✓</div>
-  <h1>You are enrolled!</h1>
-  <p class="subtitle">Your Participant ID and app have been assigned. Please read carefully.</p>
-  <div class="id-card">
-    <div class="id-label">Your Participant ID</div>
-    <div class="id-number" id="pidDisplay">P001</div>
-    <div class="id-warning">⚠ Screenshot this — you will need it on Day 14</div>
-  </div>
-  <div class="app-card">
-    <div class="app-header">
-      <div class="app-icon">📱</div>
-      <div>
-        <div class="app-label">Your assigned app</div>
-        <div class="app-name" id="appName">Who Wants to Be Cybersecure?</div>
+        Option B: Use the text fallback below (already active):
+      -->
+      <div class="dal-logo-fallback" aria-label="Dalhousie University">Dal</div>
+
+      <div class="dal-wordmark">
+        <div class="university-name">Dalhousie University</div>
+        <div class="faculty-name">Faculty of Computer Science</div>
       </div>
     </div>
-    <p class="app-desc">You have been assigned to use <strong id="appNameInline">your app</strong> for the next <strong>14 days</strong>. Please use it for at least <strong>15 minutes per day</strong>.</p>
-    <div class="steps">
-      <div class="step"><div class="step-num">1</div><div class="step-text"><strong>Download your app</strong> using the button below</div></div>
-      <div class="step"><div class="step-num">2</div><div class="step-text"><strong>Use it daily</strong> for at least 15 minutes over 14 days</div></div>
-      <div class="step"><div class="step-num">3</div><div class="step-text"><strong>On Day 14</strong> you will receive your post-study survey link</div></div>
-      <div class="step"><div class="step-num">4</div><div class="step-text"><strong>Enter your ID</strong> (<span id="pidStep" style="color:var(--green);font-weight:600">P001</span>) in the post-survey</div></div>
+  </div>
+
+  <!-- Gold accent bar -->
+  <div class="accent-bar"></div>
+
+  <!-- Main card -->
+  <div class="main-card">
+
+    <div class="study-title">Who Wants to Be Cybersecure?</div>
+    <div class="study-subtitle">
+      Persuasive Computing Lab &nbsp;·&nbsp; REB #2025-8260<br>
+      Please read the instructions below carefully before continuing.
     </div>
-    <a id="downloadBtn" class="download-btn" href="#" target="_blank">Download My App →</a>
-  </div>
-  <div class="reminder">
-    <h3>📅 Remember — Day 14 Post-Survey</h3>
-    <p>You will need your Participant ID <strong style="color:var(--gold)" id="pidReminder">P001</strong> to access the post-survey. Compensation of <strong style="color:var(--gold)">₦10,000</strong> is paid after completing both surveys.</p>
-  </div>
-</div>
 
-<div id="fullscreen">
-  <h2>Study is currently full</h2>
-  <p>Thank you for your interest. Please contact <a href="mailto:victor.yisa@dal.ca">victor.yisa@dal.ca</a></p>
-</div>
+    <!-- PID display -->
+    <div class="pid-section" id="pidSection">
+      <div class="pid-label">Your Participant ID</div>
+      <div class="pid-number loading" id="pidDisplay">Assigning your ID...</div>
+      <button class="copy-btn" id="copyBtn" disabled onclick="copyPID()">
+        <svg class="copy-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="9" y="9" width="13" height="13" rx="2"/>
+          <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+        </svg>
+        <span id="copyLabel">Copy ID</span>
+      </button>
+    </div>
 
+    <!-- Instructions -->
+    <div class="instruction-box" id="instructionBox">
+      <p><strong>This is your Participant ID (PID). Please save it.</strong></p>
+      <p>You will use this same PID in the pre-survey, the game, and the post-survey. Write it down or take a screenshot before you continue.</p>
+    </div>
+
+    <!-- Continue button -->
+    <button class="continue-btn" id="continueBtn" disabled onclick="continueToSurvey()">
+      Continue to pre-survey
+      <svg class="arrow-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M5 12h14M12 5l7 7-7 7"/>
+      </svg>
+    </button>
+
+    <!-- Footer note -->
+    <div class="footer-note" id="footerNote">
+      This page only generates your Participant ID and redirects you to the study survey. No personal data is collected here.
+    </div>
+
+  </div>
 </div>
 
 <script>
-var BIN_ID = '69bc5b23c3097a1dd53ea012';
-var ACCESS_KEY = '$2a$10$Uk0rnbm/DI7OCL/53z5tOeppQFOlcQu9YeIkw1EmDN6Me3GGppFf.';
-var BIN_URL = 'https://api.jsonbin.io/v3/b/' + BIN_ID;
+  // ─────────────────────────────────────────────
+  // CONFIGURATION — edit these two values
+  // ─────────────────────────────────────────────
+  const SUPABASE_URL = 'https://crmvaeuiksrwoiglstog.supabase.co';
+  const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNybXZhZXVpa3Nyd29pZ2xzdG9nIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY1NjAyODAsImV4cCI6MjA5MjEzNjI4MH0.aufjBFp0S0_xIcjI7lSd4F_MUW9BT2Eet64o9jSPMSY';
+  const OPINIO_SURVEY_URL = 'https://surveys.dal.ca/opinio/s?s=83618';
+  // ─────────────────────────────────────────────
 
-var APP_LINKS = {
-  app1: 'https://drive.google.com/file/d/1nUKvp1aKkO-4MG2GkyK_3qmGwR-1-ExV/view?usp=drive_link',
-  app2: 'https://drive.google.com/file/d/1ohOIILrFn6JNeVeVsEOEVPSbDs7J_74D/view?usp=sharing',
-  app3: 'https://drive.google.com/file/d/1o5rGnjrx35KGD73jgk_SrHOXHgLkMRyz/view?usp=sharing'
-};
+  let currentPID = null;
 
-var APP_NAMES = {
-  app1: 'Who Wants to Be Cybersecure? — General Edition',
-  app2: 'Who Wants to Be Cybersecure? — Men\'s Edition',
-  app3: 'Who Wants to Be Cybersecure? — Women\'s Edition'
-};
+  async function fetchPID() {
+    try {
+      const res = await fetch(`${SUPABASE_URL}/functions/v1/assign-pid`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
+        }
+      });
 
-var TARGET = {
-  app1: { male: 0.50, female: 0.50 },
-  app2: { male: 0.70, female: 0.30 },
-  app3: { male: 0.30, female: 0.70 }
-};
+      const data = await res.json();
 
-var TOLERANCE = 0.08;
+      if (res.status === 410 || data.error === 'capacity_reached') {
+        showCapacity();
+        return;
+      }
 
-function getRatio(data, app, gender) {
-  var male = data[app + '_male'] || 0;
-  var female = data[app + '_female'] || 0;
-  var other = data[app + '_other'] || 0;
-  var total = male + female + other;
-  if (total === 0) return 0;
-  return data[app + '_' + gender] / total;
-}
+      if (!res.ok || !data.pid) {
+        throw new Error(data.error || 'Unknown error');
+      }
 
-function assign(gender, data) {
-  if (gender === 'other') return 'app1';
-  if (gender === 'male') {
-    if (getRatio(data, 'app2', 'male') <= TARGET.app2.male + TOLERANCE) return 'app2';
-    if (getRatio(data, 'app1', 'male') <= TARGET.app1.male + TOLERANCE) return 'app1';
-    if (getRatio(data, 'app3', 'male') <= TARGET.app3.male + TOLERANCE) return 'app3';
-    return null;
-  }
-  if (gender === 'female') {
-    if (getRatio(data, 'app3', 'female') <= TARGET.app3.female + TOLERANCE) return 'app3';
-    if (getRatio(data, 'app1', 'female') <= TARGET.app1.female + TOLERANCE) return 'app1';
-    if (getRatio(data, 'app2', 'female') <= TARGET.app2.female + TOLERANCE) return 'app2';
-    return null;
-  }
-}
+      currentPID = String(data.pid).padStart(3, '0');
+      showPID(currentPID);
 
-function formatId(n) {
-  return 'P' + String(n).padStart(3, '0');
-}
-
-function show(id) {
-  var ids = ['gender-screen', 'processing', 'result', 'fullscreen'];
-  for (var i = 0; i < ids.length; i++) {
-    document.getElementById(ids[i]).style.display = 'none';
-  }
-  document.getElementById(id).style.display = 'block';
-}
-
-function submitGender() {
-  var sel = document.querySelector('input[name="gender"]:checked');
-  if (!sel) {
-    document.getElementById('err').style.display = 'block';
-    return;
-  }
-  document.getElementById('err').style.display = 'none';
-  document.getElementById('submitBtn').disabled = true;
-  show('processing');
-
-  var gender = sel.value;
-
-  // GET current state from JSONBin
-  fetch(BIN_URL + '/latest', {
-    headers: {
-      'X-Access-Key': ACCESS_KEY
+    } catch (err) {
+      showError(err.message);
     }
-  })
-  .then(function(r) { return r.json(); })
-  .then(function(res) {
-    var data = res.record;
-    var condition = assign(gender, data);
+  }
 
-    if (!condition) {
-      show('fullscreen');
-      return;
-    }
+  function showPID(pid) {
+    const display = document.getElementById('pidDisplay');
+    display.textContent = pid;
+    display.className = 'pid-number';
+    document.getElementById('copyBtn').disabled = false;
+    document.getElementById('continueBtn').disabled = false;
+  }
 
-    var pid = formatId(data.nextId);
+  function showCapacity() {
+    document.getElementById('pidDisplay').className = 'pid-number error-state';
+    document.getElementById('pidDisplay').textContent = 'Study closed';
+    document.getElementById('instructionBox').innerHTML = `
+      <p><strong>Recruitment has reached capacity.</strong></p>
+      <p>Thank you for your interest in this study. We are no longer accepting new participants at this time.</p>
+    `;
+    document.getElementById('continueBtn').disabled = true;
+    document.getElementById('footerNote').textContent = 'REB #2025-8260 · Persuasive Computing Lab · Dalhousie University';
+  }
 
-    // Update counts
-    data.nextId = data.nextId + 1;
-    data[condition + '_' + gender] = (data[condition + '_' + gender] || 0) + 1;
+  function showError(msg) {
+    document.getElementById('pidDisplay').className = 'pid-number error-state';
+    document.getElementById('pidDisplay').textContent = 'Something went wrong';
+    document.getElementById('instructionBox').innerHTML = `
+      <p><strong>Could not assign a Participant ID.</strong></p>
+      <p>Please refresh the page to try again. If this problem persists, contact the research team.</p>
+    `;
+    console.error('PID error:', msg);
+  }
 
-    // Save updated state back to JSONBin
-    fetch(BIN_URL, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-        'X-Access-Key': ACCESS_KEY
-      },
-      body: JSON.stringify(data)
+  function copyPID() {
+    if (!currentPID) return;
+    navigator.clipboard.writeText(currentPID).then(() => {
+      const label = document.getElementById('copyLabel');
+      label.textContent = 'Copied!';
+      setTimeout(() => label.textContent = 'Copy ID', 2200);
+    }).catch(() => {
+      // fallback for older mobile browsers
+      const el = document.createElement('textarea');
+      el.value = currentPID;
+      document.body.appendChild(el);
+      el.select();
+      document.execCommand('copy');
+      document.body.removeChild(el);
+      const label = document.getElementById('copyLabel');
+      label.textContent = 'Copied!';
+      setTimeout(() => label.textContent = 'Copy ID', 2200);
     });
+  }
 
-    // Show result
-    document.getElementById('pidDisplay').textContent = pid;
-    document.getElementById('pidStep').textContent = pid;
-    document.getElementById('pidReminder').textContent = pid;
-    document.getElementById('appName').textContent = APP_NAMES[condition];
-    document.getElementById('appNameInline').textContent = APP_NAMES[condition];
-    document.getElementById('downloadBtn').href = APP_LINKS[condition];
+  function continueToSurvey() {
+    if (!currentPID) return;
+    const url = `${OPINIO_SURVEY_URL}${OPINIO_SURVEY_URL.includes('?') ? '&' : '?'}pid=${currentPID}`;
+    window.location.href = url;
+  }
 
-    show('result');
-    window.scrollTo(0, 0);
-  })
-  .catch(function(err) {
-    console.error(err);
-    alert('Something went wrong. Please contact victor.yisa@dal.ca');
-    show('gender-screen');
-    document.getElementById('submitBtn').disabled = false;
-  });
-}
+  // Fetch PID on load
+  fetchPID();
 </script>
 </body>
 </html>
